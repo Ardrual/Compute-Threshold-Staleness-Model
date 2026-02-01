@@ -67,24 +67,11 @@ The efficiency doubling time τ controls how fast the threshold becomes stale:
 ```python
 from ctsm import DriftModel
 
-model = DriftModel(erisk=1e25, tau=8.0, update_interval=12.0, mu0=57.0, r=0.12, sigma=2.0)
+model = DriftModel(erisk=1e25, tau=8.0, update_interval=12.0)
 
-# Core calculations (no simulation needed)
+# Core calculations
 threshold = model.threshold(t=8.0)
 staleness = model.staleness(t=8.0)
-
-# Monte Carlo simulation for FNR/coverage
-metrics = model.simulate_metrics(t=8.0, n=10000)
-
-# With strategic gaming scenario
-metrics_strategic = model.simulate_metrics(
-    t=8.0,
-    n=10000,
-    scenario="threshold-sensitive",
-    strategic_share=0.2,
-    strategic_beta=0.9,
-    strategic_sigma=1.0,
-)
 ```
 
 ---
@@ -96,15 +83,6 @@ metrics_strategic = model.simulate_metrics(
 uv run ctsm efficiency --t 6 --tau 8
 uv run ctsm threshold --t 6 --erisk 1e25 --tau 8 --update-interval 12
 uv run ctsm staleness --t 8 --erisk 1e25 --tau 8 --update-interval 12
-
-# Monte Carlo simulation
-uv run ctsm simulate --t 6 --n 10000 --erisk 1e25 --tau 8 --update-interval 12 \
-  --mu0 57 --r 0.12 --sigma 2.0 --seed 42 --json
-
-# With threshold-gaming scenario
-uv run ctsm simulate --t 6 --n 10000 --erisk 1e25 --tau 8 --update-interval 12 \
-  --mu0 57 --r 0.12 --sigma 2.0 --scenario threshold-sensitive \
-  --strategic-share 0.2 --strategic-beta 0.9 --strategic-sigma 1.0 --seed 42 --json
 ```
 
 ---
